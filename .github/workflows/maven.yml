@@ -34,6 +34,7 @@ jobs:
       run: mvn clean test
 
     - name: Generate test summary
+      if: always()
       id: summary
       run: |
           PASSED=$(grep -oP '(?<=Tests run: )[0-9]+' target/surefire-reports/*.txt | awk '{sum+=$1} END {print sum}')
@@ -44,6 +45,7 @@ jobs:
           echo "SKIPPED=$SKIPPED" >> $GITHUB_ENV
 
     - name: Send results to Slack
+      if: always()
       run: |
           curl -X POST -H 'Content-type: application/json' \
           --data "{
