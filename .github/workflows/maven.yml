@@ -33,9 +33,9 @@ jobs:
     - name: Execute test
       run: mvn clean test
 
-- name: Generate test summary
-        id: summary
-        run: |
+    - name: Generate test summary
+      id: summary
+      run: |
           PASSED=$(grep -oP '(?<=Tests run: )[0-9]+' target/surefire-reports/*.txt | awk '{sum+=$1} END {print sum}')
           FAILED=$(grep -oP '(?<=Failures: )[0-9]+' target/surefire-reports/*.txt | awk '{sum+=$1} END {print sum}')
           SKIPPED=$(grep -oP '(?<=Skipped: )[0-9]+' target/surefire-reports/*.txt | awk '{sum+=$1} END {print sum}')
@@ -43,8 +43,8 @@ jobs:
           echo "FAILED=$FAILED" >> $GITHUB_ENV
           echo "SKIPPED=$SKIPPED" >> $GITHUB_ENV
 
-      - name: Send results to Slack
-        run: |
+    - name: Send results to Slack
+      run: |
           curl -X POST -H 'Content-type: application/json' \
           --data "{
             \"text\": \"*API Test Summary:*\n✅ Passed: $PASSED\n❌ Failed: $FAILED\n⚠️ Skipped: $SKIPPED\"
