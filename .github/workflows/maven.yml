@@ -56,6 +56,7 @@ jobs:
           echo "SKIPPED=$SKIPPED" >> $GITHUB_ENV
 
     - name: Send results to Slack
+      if: always()
       run: |
           if [ "$FAILED" -gt 0 ]; then
             COLOR="#FF0000"  # Red if failed
