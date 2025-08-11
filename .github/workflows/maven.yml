@@ -43,7 +43,7 @@ jobs:
       with:
           name: TestNG result
           path: target/surefire-reports/junitreports/TEST-*.xml
-          reporter: java-junot
+          reporter: java-junit
 
     - name: Send results to Slack
       if: always()
