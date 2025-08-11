@@ -37,16 +37,13 @@ jobs:
     - name: Execute test
       run: mvn clean test
 
-    - name: Generate test summary
+    - name: Publish Test Report
       if: always()
-      id: summary
-      run: |
-          PASSED=$(grep -oP '(?<=Tests run: )[0-9]+' target/surefire-reports/*.txt | awk '{sum+=$1} END {print sum}')
-          FAILED=$(grep -oP '(?<=Failures: )[0-9]+' target/surefire-reports/*.txt | awk '{sum+=$1} END {print sum}')
-          SKIPPED=$(grep -oP '(?<=Skipped: )[0-9]+' target/surefire-reports/*.txt | awk '{sum+=$1} END {print sum}')
-          echo "PASSED=$PASSED" >> $GITHUB_ENV
-          echo "FAILED=$FAILED" >> $GITHUB_ENV
-          echo "SKIPPED=$SKIPPED" >> $GITHUB_ENV
+      uses: dorny/test-reporter@v1
+      with:
+          name: TestNG result
+          path: target/surefire-reports/junitreports/TEST-*.xml
+          reporter: java-junot
 
     - name: Send results to Slack
       if: always()
