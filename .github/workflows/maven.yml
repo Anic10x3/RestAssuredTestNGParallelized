@@ -45,11 +45,47 @@ jobs:
           path: target/surefire-reports/junitreports/TEST-*.xml
           reporter: java-junit
 
-    - name: Send results to Slack
-      if: always()
+    - name: Generate test summary
+      id: summary
       run: |
+          PASSED=$(grep -oP '(?<=Tests run: )[0-9]+' target/surefire-reports/*.txt | awk '{sum+=$1} END {print sum}')
+          FAILED=$(grep -oP '(?<=Failures: )[0-9]+' target/surefire-reports/*.txt | awk '{sum+=$1} END {print sum}')
+          SKIPPED=$(grep -oP '(?<=Skipped: )[0-9]+' target/surefire-reports/*.txt | awk '{sum+=$1} END {print sum}')
+          echo "PASSED=$PASSED" >> $GITHUB_ENV
+          echo "FAILED=$FAILED" >> $GITHUB_ENV
+          echo "SKIPPED=$SKIPPED" >> $GITHUB_ENV
+
+    - name: Send results to Slack
+      run: |
+          if [ "$FAILED" -gt 0 ]; then
+            COLOR="#FF0000"  # Red if failed
+          else
+            COLOR="#36A64F"  # Green if all passed
+          fi
+
           curl -X POST -H 'Content-type: application/json' \
           --data "{
-            \"text\": \"*API Test Summary:*\n✅ Passed: $PASSED\n❌ Failed: $FAILED\n⚠️ Skipped: $SKIPPED\"
+            \"attachments\": [
+              {
+                \"color\": \"$COLOR\",
+                \"blocks\": [
+                  {
+                    \"type\": \"header\",
+                    \"text\": {\"type\": \"plain_text\", \"text\": \"📊 API Test Execution Report\", \"emoji\": true}
+                  },
+                  {
+                    \"type\": \"divider\"
+                  },
+                  {
+                    \"type\": \"section\",
+                    \"fields\": [
+                      {\"type\": \"mrkdwn\", \"text\": \"*✅ Passed:* $PASSED\"},
+                      {\"type\": \"mrkdwn\", \"text\": \"*❌ Failed:* $FAILED\"},
+                      {\"type\": \"mrkdwn\", \"text\": \"*⚠️ Skipped:* $SKIPPED\"}
+                    ]
+                  }
+                ]
+              }
+            ]
           }" \
           ${{ secrets.SLACK_WEBHOOK_URL }}
