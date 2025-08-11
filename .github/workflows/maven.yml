@@ -46,6 +46,7 @@ jobs:
           reporter: java-junit
 
     - name: Generate test summary
+      if: always()
       id: summary
       run: |
           PASSED=$(grep -oP '(?<=Tests run: )[0-9]+' target/surefire-reports/*.txt | awk '{sum+=$1} END {print sum}')
@@ -60,6 +61,6 @@ jobs:
       run: |
           curl -X POST -H 'Content-type: application/json' \
           --data "{
-            \"text\": \"*API Test Summary:*\n✅ Passed: $PASSED\n❌ Failed: $FAILED\n⚠️ Skipped: $SKIPPED\n📄 Download report: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"
+            \"text\": \"*API Test Summary:*\n✅ Passed: $PASSED\n❌ Failed: $FAILED\n⚠️ Skipped: $SKIPPED\"
           }" \
           ${{ secrets.SLACK_WEBHOOK_URL }}
