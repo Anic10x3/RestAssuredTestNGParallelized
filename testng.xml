@@ -4,11 +4,6 @@
         <listener class-name="listeners.TestNGListener"/>
     </listeners>
     <test name="GetUsersTest">
-        <groups>
-            <run>
-                <include name="${groups}"/>
-            </run>
-        </groups>
         <classes>
             <class name="SampleTestNGTest" />
             <class name="JSONPlaceHolderTest" />
