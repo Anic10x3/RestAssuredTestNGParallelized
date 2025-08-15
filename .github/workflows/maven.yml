@@ -82,6 +82,10 @@ jobs:
               echo "GROUPS=${{ github.event.inputs.runType }}" >> $GITHUB_ENV
             fi
           fi
+          
+          echo "Service: ${{ github.event.inputs.service }}"
+          echo "Run Type: ${{ github.event.inputs.runType }}"
+          echo "Environment: ${{ github.event.inputs.environment }}"
 
       - name: Run API Tests
         run: |
