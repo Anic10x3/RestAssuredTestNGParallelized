@@ -14,13 +14,30 @@ on:
       environment:
         description: "Select environment to run tests"
         required: true
+        default: staging
         type: choice
         options:
           - dev
           - staging
           - prod
-        default: staging
-
+      runType:
+        description: "Select type of run"
+        required: true
+        type: choice
+        options:
+          - smoke
+          - regression
+          - full
+      service:
+        description: "Select service (optional - leave blank for all)"
+        required: false
+        default: ""
+        type: choice
+        options:
+          - ""
+          - user-service
+          - payment-service
+          - order-service
 jobs:
   run-tests:
     runs-on: ubuntu-latest
@@ -47,10 +64,32 @@ jobs:
         with:
           java-version: ${{ matrix.java-version }}
           distribution: temurin
-          cache: maven
+          cache: maven 
+          
+      - name: Build test group string
+        id: build-groups
+        run: |
+          if [ -n "${{ github.event.inputs.service }}" ]; then
+            if [ "${{ github.event.inputs.runType }}" = "full" ]; then
+              echo "GROUPS=${{ github.event.inputs.service }}" >> $GITHUB_ENV
+            else
+              echo "GROUPS=${{ github.event.inputs.service }},${{ github.event.inputs.runType }}" >> $GITHUB_ENV
+            fi
+          else
+            if [ "${{ github.event.inputs.runType }}" = "full" ]; then
+              echo "GROUPS=" >> $GITHUB_ENV
+            else
+              echo "GROUPS=${{ github.event.inputs.runType }}" >> $GITHUB_ENV
+            fi
+          fi
 
       - name: Run API Tests
-        run: mvn -T 2C clean test -Denv=${{ env.ENVIRONMENT }}
+        run: |
+          if [ -z "$GROUPS" ]; then
+            mvn clean test -Denvironment=${{ github.event.inputs.environment }}
+          else
+            mvn clean test -Dgroups="$GROUPS" -Denvironment=${{ github.event.inputs.environment }}
+          fi
 
       - name: Upload Surefire Reports
         uses: actions/upload-artifact@v4
