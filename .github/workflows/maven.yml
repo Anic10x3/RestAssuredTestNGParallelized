@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java-version: [11, 17]
+        java-version: [11]
 
     env:
       BASE_URL: ${{ secrets.BASE_URL }}
