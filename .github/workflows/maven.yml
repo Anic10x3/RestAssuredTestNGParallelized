@@ -14,12 +14,12 @@ on:
       environment:
       description: "Select environment to run tests"
       required: true
+      default: staging
       type: choice
       options:
         - dev
         - staging
         - prod
-      default: staging
     runType:
       description: "Select type of run"
       required: true
