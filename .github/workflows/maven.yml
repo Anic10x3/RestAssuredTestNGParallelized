@@ -12,32 +12,32 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-      description: "Select environment to run tests"
-      required: true
-      default: staging
-      type: choice
-      options:
-        - dev
-        - staging
-        - prod
-    runType:
-      description: "Select type of run"
-      required: true
-      type: choice
-      options:
-        - smoke
-        - regression
-        - full
-    service:
-      description: "Select service (optional - leave blank for all)"
-      required: false
-      default: ""
-      type: choice
-      options:
-        - ""
-        - user-service
-        - payment-service
-        - order-service
+        description: "Select environment to run tests"
+        required: true
+        default: staging
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      runType:
+        description: "Select type of run"
+        required: true
+        type: choice
+        options:
+          - smoke
+          - regression
+          - full
+      service:
+        description: "Select service (optional - leave blank for all)"
+        required: false
+        default: ""
+        type: choice
+        options:
+          - ""
+          - user-service
+          - payment-service
+          - order-service
 jobs:
   run-tests:
     runs-on: ubuntu-latest
