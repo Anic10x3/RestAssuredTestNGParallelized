@@ -16,13 +16,13 @@ import java.util.HashMap;
 
 public class SampleTestNGTest {
 
-    @Test
+    @Test(groups = {"user-service", "smoke"})
     public void getUsers() {
         Response response = ApiClient.sendRequestWithHeaders(EnvironmentConfig.baseUrl(), Endpoints.USERS, HttpMethod.GET, HeaderProvider.getDefaultHeaders());
         Assert.assertEquals(response.getStatusCode(), StatusCode.CODE_200.getCode());
     }
 
-    @Test
+    @Test(groups = {"user-service", "regression"})
     public void getUsersWithId() {
         Response response = ApiClient.sendRequestWithHeaders(EnvironmentConfig.baseUrl(),Endpoints.USERS_WITH_ID,  HttpMethod.GET, HeaderProvider.getDefaultHeaders());
         Assert.assertEquals(response.getStatusCode(), StatusCode.CODE_200.getCode());
@@ -38,7 +38,7 @@ public class SampleTestNGTest {
         Assert.assertEquals(email, "janet.weaver@reqres.in", "Email is not matching" );
     }
 
-    @Test
+    @Test(groups = {"user-service", "regression"})
     public void getNonFoundUsers() {
         Response response = ApiClient.sendRequestWithHeaders(EnvironmentConfig.baseUrl(),Endpoints.USERS_NOT_FOUND,  HttpMethod.GET, HeaderProvider.getDefaultHeaders());
         Assert.assertEquals(response.getStatusCode(),StatusCode.CODE_404.getCode());
