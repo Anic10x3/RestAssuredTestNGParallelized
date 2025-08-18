@@ -8,7 +8,31 @@ import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
 import org.testng.Reporter;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
 public class ExtentRestAssuredFilter implements Filter{
+
+    private static final Set<String> SENSITIVE_HEADERS =
+            new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    static {
+        SENSITIVE_HEADERS.addAll(Arrays.asList(
+                "x-api-key",
+                "authorization",
+                "cookie",
+                "set-cookie"
+        ));
+    }
+
+    private static String maskValue(String value) {
+        if (value == null || value.isEmpty()) return "********";
+        // show only last 4 chars
+        int keep = Math.min(4, value.length());
+        String tail = value.substring(value.length() - keep);
+        return "********" + tail;
+    }
     @Override
     public Response filter(FilterableRequestSpecification requestSpec,
                            FilterableResponseSpecification responseSpec,
@@ -20,7 +44,16 @@ public class ExtentRestAssuredFilter implements Filter{
         log.append("<b>Request:</b><br>")
                 .append(requestSpec.getMethod()).append(" ").append(requestSpec.getURI()).append("<br>");
         if (requestSpec.getHeaders() != null) {
-            log.append("<b>Headers:</b> ").append(requestSpec.getHeaders()).append("<br>");
+            String filterHeaders = requestSpec.getHeaders().asList().stream().map(h -> {
+                String name = h.getName();
+                String val = h.getValue();
+                if(SENSITIVE_HEADERS.contains(name)) {
+                    return name + ": " + maskValue(val); // Mask API key
+                } else {
+                    return name + ": " + val;
+                }
+            }).collect(Collectors.joining((", ")));
+            log.append("<b>Headers:</b> ").append(filterHeaders).append("<br>");
         }
         if (requestSpec.getBody() != null) {
             log.append("<b>Body:</b> ").append((String) requestSpec.getBody()).append("<br>");

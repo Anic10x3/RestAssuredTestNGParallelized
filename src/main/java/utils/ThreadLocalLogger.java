@@ -1,5 +1,6 @@
 package utils;
 
+import com.aventstack.extentreports.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +13,8 @@ public class ThreadLocalLogger {
     private ThreadLocalLogger() {
     }
 
-    public static void initLogger(String testName) {
-        Logger logger = LoggerFactory.getLogger(testName);
+    public static void initLogger(Class<?> clazz) {
+        Logger logger = LoggerFactory.getLogger(clazz);
         threadLocalLogger.set(logger);
     }
 
@@ -24,4 +25,5 @@ public class ThreadLocalLogger {
     public static void removeLogger() {
         threadLocalLogger.remove();
     }
+
 }

@@ -54,8 +54,8 @@ public class TestNGListener implements ITestListener, ISuiteListener {
     @Override
     public void onTestStart(ITestResult result) {
         String testName = result.getMethod().getMethodName();
-        ThreadLocalLogger.initLogger(testName); // Initialize logger for the test
-        ThreadLocalLogger.getLogger().info("Starting test: {}", testName);
+       // ThreadLocalLogger.initLogger(testName); // Initialize logger for the test
+       // ThreadLocalLogger.getLogger().info("Starting test: {}", testName);
         String description = result.getMethod().getDescription();
         ExtentTestManager.startTest(result); // pass ITestResult, thread-safe
         if (result.getMethod().getRetryAnalyzer(result) == null) {
@@ -66,7 +66,7 @@ public class TestNGListener implements ITestListener, ISuiteListener {
     @Override
     public void onTestSuccess(ITestResult result) {
         if (result.getStatus() == ITestResult.SUCCESS) {
-            ThreadLocalLogger.getLogger().info("Test passed: {}", result.getMethod().getMethodName());
+          //  ThreadLocalLogger.getLogger().info("Test passed: {}", result.getMethod().getMethodName());
             ExtentTestManager.getTest()
                     .log(Status.PASS, "Test Passed");
             ThreadLocalLogger.removeLogger();
@@ -85,11 +85,11 @@ public class TestNGListener implements ITestListener, ISuiteListener {
                 return; // Don't mark as FAIL yet, because we are retrying
             }
         }
-        ThreadLocalLogger.getLogger().error("Test failed: {}", result.getThrowable().getMessage());
+      //  ThreadLocalLogger.getLogger().error("Test failed: {}", result.getThrowable().getMessage());
         // Final failure after all retries
         ExtentTestManager.getTest()
                 .log(Status.FAIL, "Test Failed: " + result.getThrowable());
-        ThreadLocalLogger.removeLogger();
+       // ThreadLocalLogger.removeLogger();
     }
 
     @Override

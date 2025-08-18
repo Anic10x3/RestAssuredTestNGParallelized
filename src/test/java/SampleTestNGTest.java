@@ -14,11 +14,12 @@ import utils.ThreadLocalLogger;
 
 import java.util.HashMap;
 
-public class SampleTestNGTest {
+public class SampleTestNGTest extends BaseTest {
 
     @Test(groups = {"user-service", "smoke"})
     public void getUsers() {
         Response response = ApiClient.sendRequestWithHeaders(EnvironmentConfig.baseUrl(), Endpoints.USERS, HttpMethod.GET, HeaderProvider.getDefaultHeaders());
+        log.info("Recieved response");
         Assert.assertEquals(response.getStatusCode(), StatusCode.CODE_200.getCode());
     }
 
@@ -26,6 +27,8 @@ public class SampleTestNGTest {
     public void getUsersWithId() {
         Response response = ApiClient.sendRequestWithHeaders(EnvironmentConfig.baseUrl(),Endpoints.USERS_WITH_ID,  HttpMethod.GET, HeaderProvider.getDefaultHeaders());
         Assert.assertEquals(response.getStatusCode(), StatusCode.CODE_200.getCode());
+
+        log.info("Validating JSON");
         JsonPath jsonPath = new JsonPath(response.asString());
         String name =  jsonPath.getString("data.first_name");
         String lastName = jsonPath.getString("data.last_name");
@@ -41,6 +44,7 @@ public class SampleTestNGTest {
     @Test(groups = {"user-service", "regression"})
     public void getNonFoundUsers() {
         Response response = ApiClient.sendRequestWithHeaders(EnvironmentConfig.baseUrl(),Endpoints.USERS_NOT_FOUND,  HttpMethod.GET, HeaderProvider.getDefaultHeaders());
+        log.info("Verifying status code");
         Assert.assertEquals(response.getStatusCode(),StatusCode.CODE_404.getCode());
     }
 }
