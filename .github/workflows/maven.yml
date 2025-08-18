@@ -105,7 +105,7 @@ jobs:
         if: always()
         uses: dorny/test-reporter@v1
         with:
-          name: TestNG Results (Java ${{ matrix.java-version }})
+          name: TestNG Results
           path: target/surefire-reports/junitreports/TEST-*.xml
           reporter: java-junit
 
