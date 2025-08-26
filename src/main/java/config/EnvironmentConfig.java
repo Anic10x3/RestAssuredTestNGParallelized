@@ -25,5 +25,12 @@ public class EnvironmentConfig {
     public static String getAPIKey() {
         return props.getProperty("apiKey");
     }
+    public static String getPassword(){
+        return props.getProperty("passwordAuth");
+    }
+
+    public static String getUsername(){
+        return props.getProperty("usernameAuth");
+    }
 
 }

@@ -20,7 +20,8 @@ public class ApiClient {
 
     public static Response sendRequest(String BASE_URL, String endpoint, String method, Object body, Map<String, String>
             headers, Map<String, String> queryParams, boolean requiresAuth) {
-        var request = given().spec(RequestSpecManager.getRequestSpec(BASE_URL)).contentType(ContentType.JSON).filter(new ExtentRestAssuredFilter());
+        var request = given().spec(RequestSpecManager.getRequestSpec(BASE_URL)).contentType(ContentType.JSON)
+                    .filter(new ExtentRestAssuredFilter());
         if (requiresAuth) {
             String token = TokenManager.getToken();
             request.header("Authorization", "Bearer " + token);

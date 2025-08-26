@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicReference;
-import models.AuthResponse;
 import utils.AuthUtils;
 
 public class TokenManager {
@@ -18,7 +17,6 @@ public class TokenManager {
         String current = tokenRef.get();
         if (current == null || Instant.now().isAfter(expiry.get())) {
             synchronized (TokenManager.class) {
-                // double-checked locking
                 current = tokenRef.get();
                 if (current == null || Instant.now().isAfter(expiry.get())) {
                     logger.info("Generating new auth token by thread: {}", Thread.currentThread().getName());

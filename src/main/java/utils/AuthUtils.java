@@ -14,11 +14,11 @@ public class AuthUtils {
                 .baseUri(EnvironmentConfig.baseUrl())
                 .basePath(EnvironmentConfig.authPath())
                 .header("Content-Type", "application/json")
-                .header("x-api-key", "reqres-free-v1")
-                .body("{ \"username\": \"user\", \"password\": \"pass\" }")
+                .header("x-api-key", EnvironmentConfig.getAPIKey())
+                .body("{ \"username\": \"+"+EnvironmentConfig.getUsername()+"+\", \"password\": \""+EnvironmentConfig.getPassword()+"\" }")
                 .post();
 
-        if (response.statusCode() != 200) {
+        if (response.statusCode() != StatusCode.CODE_200.getCode()) {
             throw new RuntimeException("Failed to get token: " + response.getBody().asString());
         }
         String token = response.jsonPath().getString("access_token");
